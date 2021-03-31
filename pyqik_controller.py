@@ -4,7 +4,6 @@ import time
 import pickle
 import ctypes
 
-
 qik_controll_table = {"Firmware_Version": 0x81,
                       "Get_Error": 0x82,
                       "Get_Conf": 0x83,
@@ -41,7 +40,7 @@ class CRC:
         result = self.crc.get_crc7(message_hex, msg_len)
         return result
 
-class ControllerInit:
+class ControllerInit(object):
     def __init__(self, device_path, speed):
         self.string = ''
         print("Pololu Qik Python Library\n")
@@ -196,9 +195,7 @@ class ControllerInit:
     def port_close(self):
         self.ser.close()
 
-class MotorController:
-    def __init__(self, data):
-        self.data = data
+class MotorController(ControllerInit):
 
     def motor_coast(self, motor_no):
 
@@ -209,7 +206,7 @@ class MotorController:
             get_motor_addr = qik_controll_table.get("Motor1_Coast")
 
         message = get_motor_addr
-        self.data.write_port(message)
+        self.write_port(message)
 
     def motor_run(self, motor_no, dir, speed):
 
@@ -226,8 +223,8 @@ class MotorController:
             self.get_motor_addr = qik_controll_table.get("Motor1_Rev")
 
         message = self.get_motor_addr, speed
-        self.data.write_port(message)
+        self.write_port(message)
 
     def motor_stop(self):
         message = self.get_motor_addr, 0x00
-        self.data.write_port(message)
+        self.write_port(message)
