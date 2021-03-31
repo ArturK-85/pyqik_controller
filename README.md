@@ -23,17 +23,15 @@ Simple exapmple program:
 import time
 import pyqik_controller as pyqik
 
-pyqik_init = pyqik.ControllerInit('/dev/ttyUSB0', 38400)   # 38400kbps is the max speed for this controller
+controller = pyqik.MotorController('/dev/ttyUSB0', 38400)   # 38400kbps is the max speed for this controller
 
-pyqik_init.get_conf()                                      # getting configuration of controller
+controller.get_conf()                                      # getting configuration of controller              
 
-controll = pyqik.MotorController(pyqik_init)               
-
-controll.motor_run(0, 'Fwd', 0x40)                         # run motor forward in half speed
+controller.motor_run(0, 'Fwd', 0x40)                         # run motor forward in half speed
 time.sleep(1)
-controll.motor_stop()                                      # stop motor
+controller.motor_stop()                                      # stop motor
 
-pyqik_init.port_close()                                    # port close
+controller.port_close()                                    # port close
 ```
 
 
