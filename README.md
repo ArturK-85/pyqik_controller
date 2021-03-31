@@ -19,6 +19,15 @@ https://github.com/ArturK-85/pololu_crc7.git
 
 ## Setup
 
+Build from source:
+```
+python setup.py build
+```
+And install:
+```
+python setup.py install
+```
+
 ## Documentation
 All functions uses cyclic redundancy check
 
