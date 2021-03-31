@@ -1,0 +1,9 @@
+README.md
+setup.py
+bin/pololu_crc7.so
+pyqik_controller/__init__.py
+pyqik_controller/pyqik_controller.py
+pyqik_controller.egg-info/PKG-INFO
+pyqik_controller.egg-info/SOURCES.txt
+pyqik_controller.egg-info/dependency_links.txt
+pyqik_controller.egg-info/top_level.txt
