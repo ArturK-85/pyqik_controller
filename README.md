@@ -46,7 +46,7 @@ All functions uses cyclic redundancy check
 Simple exapmple program:
 ```
 import time
-import pyqik_controller as pyqik
+import pyqik_controller.pyqik_controller as pyqik
 
 controller = pyqik.MotorController('/dev/ttyUSB0', 38400)   # 38400kbps is the max speed for this controller
 
