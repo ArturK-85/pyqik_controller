@@ -18,7 +18,10 @@ This project is a Python library for Pololu motor controller Qik it was uses pol
 https://github.com/ArturK-85/pololu_crc7.git
 
 ## Setup
-
+Download
+```
+git clone https://github.com/ArturK-85/pyqik_controller.git
+```
 Build from source:
 ```
 python setup.py build
