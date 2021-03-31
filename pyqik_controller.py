@@ -15,7 +15,7 @@ qik_controll_table = {"Firmware_Version": 0x81,
                       "Motor1_Fwd": 0x8C,
                       "Motor1_Rev": 0x8E}
 
-class CRC:
+class CRC(object):
     """ CRC class returning CRC7 code for Pololu Qik serial communication
         using a modify C code as a library with ctypes to a fast computation
         CRC7 checksum. """
@@ -40,7 +40,66 @@ class CRC:
         result = self.crc.get_crc7(message_hex, msg_len)
         return result
 
-class ControllerInit(object):
+class ErrorCheck(CRC):
+
+    def error_check(self):
+        index = 0
+        message = qik_controll_table.get("Get_Error")
+
+        self.write_port(message)
+        time.sleep(0.004)
+
+        self.read_data = self.read_port()
+
+        msg_bin = int(self.read_data)
+
+        error_table = {3: 'Data Overrun Error',
+                       4: 'Frame Error',
+                       5: 'CRC Error',
+                       6: 'Format Error',
+                       7: 'Timeout'}
+
+        bit_ignore = [0, 1, 2]
+
+        while msg_bin:           # returns true if data is no 0
+            if msg_bin & 1:      # returns true if LSB is 1
+                if index in bit_ignore:
+                    pass
+                else:
+                    print(error_table.get(index))
+            msg_bin >>= 1         # discard LSB
+            index += 1
+
+class PortControll(ErrorCheck):
+
+    def read_port(self):
+        self.read_data = self.ser.read().encode('hex')
+        return self.read_data
+
+    def write_port(self, message):
+        check_len = hasattr(message, '__len__')
+        crc = self.get_crc.checksum(message)
+        packet = []
+
+        if check_len is True:
+            msg_len = len(message)
+
+            for i in range(msg_len):
+                packet.append(message[i])
+
+        else:
+            msg_len = 1
+            packet.append(message)
+
+        packet.append(crc)
+
+        self.ser.write(packet)
+        time.sleep(0.004)
+
+    def port_close(self):
+        self.ser.close()
+
+class ControllerInit(PortControll):
     def __init__(self, device_path, speed):
         self.string = ''
         print("Pololu Qik Python Library\n")
@@ -139,61 +198,6 @@ class ControllerInit(object):
 
         message = self.set_conf_addr, 0x03, timeout, 0x55, 0x2A
         self.write_port(message)
-
-    def error_check(self):
-        index = 0
-        message = qik_controll_table.get("Get_Error")
-
-        self.write_port(message)
-        time.sleep(0.004)
-
-        self.read_data = self.read_port()
-
-        msg_bin = int(self.read_data)
-
-        error_table = {3: 'Data Overrun Error',
-                       4: 'Frame Error',
-                       5: 'CRC Error',
-                       6: 'Format Error',
-                       7: 'Timeout'}
-
-        bit_ignore = [0, 1, 2]
-
-        while msg_bin:           # returns true if data is no 0
-            if msg_bin & 1:      # returns true if LSB is 1
-                if index in bit_ignore:
-                    pass
-                else:
-                    print(error_table.get(index))
-            msg_bin >>= 1         # discard LSB
-            index += 1
-
-    def read_port(self):
-        self.read_data = self.ser.read().encode('hex')
-        return self.read_data
-
-    def write_port(self, message):
-        check_len = hasattr(message, '__len__')
-        crc = self.get_crc.checksum(message)
-        packet = []
-
-        if check_len is True:
-            msg_len = len(message)
-
-            for i in range(msg_len):
-                packet.append(message[i])
-
-        else:
-            msg_len = 1
-            packet.append(message)
-
-        packet.append(crc)
-
-        self.ser.write(packet)
-        time.sleep(0.004)
-
-    def port_close(self):
-        self.ser.close()
 
 class MotorController(ControllerInit):
 
