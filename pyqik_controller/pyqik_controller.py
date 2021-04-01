@@ -22,7 +22,7 @@ class CRC(object):
 
     def __init__(self):
         """ As init load modify C code library """
-        sharedObjectPath = (os.getcwd() + "/bin" + "/" + "pololu_crc7.so")
+        sharedObjectPath = "pololu_crc7.so"
         self.crc = ctypes.CDLL(sharedObjectPath)
 
     def checksum(self, message_hex):
