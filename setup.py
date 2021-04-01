@@ -1,4 +1,6 @@
-from setuptools import setup
+from setuptools import setup, Extension
+
+module = Extension('pololu_crc7', sources = ['src/pololu_crc7.c'])
 
 setup(
    name='pyqik_controller',
@@ -6,7 +8,7 @@ setup(
    author='Artur Komenda',
    author_email='artur.eu@protonmail.com',
    packages=['pyqik_controller'],
-   scripts=['bin/pololu_crc7.so'],
+   ext_modules = [module],
    url='http://pypi.python.org/pypi/pyqik_controller/',
    license='LICENSE',
    description='A Python Pololu QIK Controller Library',
